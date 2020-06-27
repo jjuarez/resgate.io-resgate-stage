@@ -1,0 +1,22 @@
+---
+version: "3.8"
+
+networks:
+  nats: {}
+
+services:
+  nats:
+    image: "nats:2.1.7-alpine3.11"
+    ports: ["4222:4222"]
+    networks: [nats]
+  resgate:
+    image: "resgateio/resgate:latest"
+    ports: ["8080:8080"]
+    networks: [nats]
+    depends_on: [nats]
+    command: "--nats nats://nats:4222"
+  client:
+    image: "jjuarez/resgate.io-nodejs-example:latest"
+    networks: [nats]
+    depends_on: [resgate]
+
